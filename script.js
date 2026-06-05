@@ -5400,6 +5400,54 @@ function createChart(id, label, labels, values, color) {
   });
 }
 
+
+
+// create histogram for numeric values (prices)
+function createHistogram(id, values, binCount = 6, color = '#7b9cff') {
+  const nums = values.filter(v => typeof v === 'number' && !isNaN(v));
+  if (nums.length === 0) return;
+  const min = Math.min(...nums);
+  const max = Math.max(...nums);
+  const range = max - min || 1;
+  const binSize = range / binCount;
+  const bins = new Array(binCount).fill(0);
+  nums.forEach(v => {
+    let idx = Math.floor((v - min) / binSize);
+    if (idx >= binCount) idx = binCount - 1;
+    bins[idx]++;
+  });
+  const labels = bins.map((_, i) => {
+    const a = Math.round(min + i * binSize);
+    const b = Math.round(min + (i + 1) * binSize);
+    return `${a.toLocaleString()} - ${b.toLocaleString()}`;
+  });
+  if (charts[id]) charts[id].destroy();
+  const ctx = document.getElementById(id).getContext('2d');
+  charts[id] = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Frequency', data: bins, backgroundColor: color, borderRadius: 6 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } });
+}
+
+// scatter chart for price vs rating
+function createScatter(id, points, color = '#ffd36b') {
+  if (!points || points.length === 0) return;
+  if (charts[id]) charts[id].destroy();
+  const ctx = document.getElementById(id).getContext('2d');
+  charts[id] = new Chart(ctx, { type: 'scatter', data: { datasets: [{ label: 'Price vs Rating', data: points, backgroundColor: color, pointRadius: 6 }] }, options: { plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Price (IDR)' } }, y: { title: { display: true, text: 'Rating' }, min: 0, max: 5 } } } });
+}
+
+// average price by RAM
+function createAvgPriceByRam(id, data, color = '#7df0c6') {
+  const groups = {};
+  data.forEach(item => {
+    const ram = item.ram || 'unknown';
+    if (!groups[ram]) groups[ram] = { sum: 0, n: 0 };
+    if (typeof item.price === 'number') { groups[ram].sum += item.price; groups[ram].n += 1; }
+  });
+  const labels = Object.keys(groups).sort((a,b) => Number(a) - Number(b));
+  const values = labels.map(l => Math.round((groups[l].sum / (groups[l].n||1)) || 0));
+  createChart(id, 'Avg Price by RAM', labels.map(l => `${l}GB`), values, color);
+}
+
+// updateCharts enhancements: add histogram, scatter, and avg-by-ram
 function updateCharts(data) {
   const displayCount = {};
   const priceRanges = { '≤10K':0, '10K-15K':0, '15K-20K':0, '>20K':0 };
@@ -5412,6 +5460,16 @@ function updateCharts(data) {
   });
   createChart('displayChart', 'Phones by Display', Object.keys(displayCount), Object.values(displayCount), '#5f5fff');
   createChart('priceChart', 'Price Ranges', Object.keys(priceRanges), Object.values(priceRanges), '#ff7b7b');
+
+  // histogram of prices
+  createHistogram('priceHistChart', data.map(d => d.price), 6, '#7b9cff');
+
+  // scatter price vs rating
+  const points = data.filter(d => typeof d.price === 'number' && typeof d.ratings === 'number').map(d => ({ x: d.price, y: d.ratings }));
+  createScatter('scatterChart', points, '#ffd36b');
+
+  // average price by RAM
+  createAvgPriceByRam('avgRamChart', data, '#7df0c6');
 }
 
 function initDashboard() {
@@ -5494,6 +5552,141 @@ function initCarousel() {
 
   // responsive update on resize
   window.addEventListener('resize', () => { update(); });
+  // initial position
+  update();
+}
+
+// enhance carousel with indicators and thumbnails
+function _syncIndicatorsAndThumbs(track, index) {
+  const indicators = document.querySelectorAll('.carousel-indicators .dot');
+  indicators.forEach((d, i) => d.classList.toggle('active', i === index));
+  const thumbs = document.querySelectorAll('.carousel-thumbs .thumb');
+  thumbs.forEach((t, i) => t.classList.toggle('active', i === index));
+}
+
+// Initialize carousel with indicators, thumbnails, keyboard nav, and slide overlay
+function initCarousel() {
+  const track = document.querySelector('.carousel-track');
+  const slides = track ? Array.from(track.children) : [];
+  const prevBtn = document.querySelector('.carousel-btn.prev');
+  const nextBtn = document.querySelector('.carousel-btn.next');
+  const indicatorsContainer = document.querySelector('.carousel-indicators');
+  const thumbsContainer = document.querySelector('.carousel-thumbs');
+  const container = document.querySelector('.carousel');
+  if (!track || slides.length === 0) return;
+
+  // create slide count overlay
+  let slideCountOverlay = container.querySelector('.slide-count');
+  if (!slideCountOverlay) {
+    slideCountOverlay = document.createElement('div');
+    slideCountOverlay.className = 'slide-count';
+    container.appendChild(slideCountOverlay);
+  }
+
+  // build indicators
+  if (indicatorsContainer) {
+    indicatorsContainer.innerHTML = '';
+    slides.forEach((s, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'dot';
+      btn.setAttribute('aria-label', `Slide ${i+1}`);
+      btn.addEventListener('click', () => { index = i; update(); resetAuto(); });
+      indicatorsContainer.appendChild(btn);
+    });
+  }
+
+  // build thumbnails
+  if (thumbsContainer) {
+    thumbsContainer.innerHTML = '';
+    slides.forEach((s, i) => {
+      const t = document.createElement('button');
+      t.className = 'thumb';
+      const img = s.querySelector('img').cloneNode();
+      t.appendChild(img);
+      t.addEventListener('click', () => { index = i; update(); resetAuto(); });
+      thumbsContainer.appendChild(t);
+    });
+  }
+
+  let index = 0;
+
+  function update() {
+    const gap = parseFloat(getComputedStyle(track).gap || 8);
+    const slideW = slides[0].getBoundingClientRect().width + gap;
+    const offset = -index * slideW;
+    track.style.transform = `translateX(${offset}px)`;
+
+    // highlight active slide
+    slides.forEach((s, i) => s.classList.toggle('active', i === index));
+    // sync indicators and thumbs
+    _syncIndicatorsAndThumbs(track, index);
+
+    // show slide count overlay briefly
+    slideCountOverlay.textContent = `${index + 1} / ${slides.length}`;
+    slideCountOverlay.classList.add('visible');
+    clearTimeout(slideCountOverlay._hideTimeout);
+    slideCountOverlay._hideTimeout = setTimeout(() => slideCountOverlay.classList.remove('visible'), 1200);
+  }
+
+  function next() { index = (index + 1) % slides.length; update(); }
+  function prev() { index = (index - 1 + slides.length) % slides.length; update(); }
+
+  nextBtn && nextBtn.addEventListener('click', () => { next(); resetAuto(); });
+  prevBtn && prevBtn.addEventListener('click', () => { prev(); resetAuto(); });
+
+  let auto = setInterval(next, 3500);
+  function resetAuto() { clearInterval(auto); auto = setInterval(next, 3500); }
+
+  // pause on hover
+  if (container) {
+    container.addEventListener('mouseenter', () => clearInterval(auto));
+    container.addEventListener('mouseleave', () => { clearInterval(auto); auto = setInterval(next, 3500); });
+  }
+
+  // touch / swipe support for mobile
+  let startX = 0, startY = 0, deltaX = 0, isTouching = false;
+  const threshold = 40; // px to count as swipe
+  track.addEventListener('touchstart', (e) => {
+    if (!e.touches || e.touches.length === 0) return;
+    isTouching = true;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    deltaX = 0;
+    clearInterval(auto);
+  }, { passive: true });
+
+  track.addEventListener('touchmove', (e) => {
+    if (!isTouching || !e.touches || e.touches.length === 0) return;
+    const x = e.touches[0].clientX;
+    const y = e.touches[0].clientY;
+    deltaX = x - startX;
+    const deltaY = Math.abs(y - startY);
+    // if vertical movement is greater, ignore horizontal swipe
+    if (deltaY > Math.abs(deltaX)) return;
+    e.preventDefault();
+    // small translate during swipe for feel
+    track.style.transform = `translateX(${ -index * (slides[0].getBoundingClientRect().width + parseFloat(getComputedStyle(track).gap || 8)) + deltaX }px)`;
+  }, { passive: false });
+
+  track.addEventListener('touchend', (e) => {
+    isTouching = false;
+    if (Math.abs(deltaX) > threshold) {
+      if (deltaX < 0) next(); else prev();
+    } else {
+      update();
+    }
+    resetAuto();
+  });
+
+  // keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') { prev(); resetAuto(); }
+    else if (e.key === 'ArrowRight') { next(); resetAuto(); }
+  });
+
+  // responsive update on resize
+  window.addEventListener('resize', () => { update(); });
+
   // initial position
   update();
 }

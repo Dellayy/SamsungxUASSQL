@@ -106,4 +106,26 @@ nav a:hover { color: #fff; }
 .reveal-on-scroll { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
 .reveal-on-scroll.visible { opacity: 1; transform: none; }
 
+/* Indicators and thumbnails */
+.carousel-indicators { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
+.carousel-indicators .dot { width: 10px; height: 10px; background: rgba(255,255,255,0.18); border-radius: 50%; border: none; cursor: pointer; padding: 0; transition: transform .18s ease, background .18s ease; }
+.carousel-indicators .dot.active { background: linear-gradient(135deg,#5f5fff,#ff7b7b); transform: scale(1.16); box-shadow: 0 6px 18px rgba(95,95,255,0.12); }
+.carousel-thumbs { display: flex; gap: 8px; justify-content: center; margin-top: 12px; overflow-x: auto; padding: 8px 4px; }
+.carousel-thumbs .thumb { width: 72px; height: 56px; flex: 0 0 auto; border-radius: 8px; overflow: hidden; border: 2px solid transparent; cursor: pointer; opacity: 0.8; transition: transform .18s ease, border-color .18s ease, opacity .18s ease; }
+.carousel-thumbs .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.carousel-thumbs .thumb.active { border-color: rgba(255,255,255,0.12); opacity: 1; transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.45); }
+
+/* active slide in track */
+.slide.active { transform: scale(1.04); box-shadow: 0 30px 60px rgba(0,0,0,0.45); z-index: 3; }
+
+/* slide count overlay */
+.slide-count { position: absolute; right: 12px; top: 12px; background: rgba(0,0,0,0.54); color: #fff; padding: 0.36rem 0.65rem; border-radius: 999px; font-weight: 600; opacity: 0; transform: translateY(-6px); transition: opacity .28s ease, transform .28s ease; pointer-events: none; z-index: 8; }
+.slide-count.visible { opacity: 1; transform: none; }
+
+/* smoother slide transform during swipe/transition */
+.carousel-track { transition: transform .35s cubic-bezier(.22,.9,.35,1); }
+.slide { transition: transform .35s cubic-bezier(.22,.9,.35,1), box-shadow .35s ease; }
+
+
+
 
