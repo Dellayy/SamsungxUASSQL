@@ -126,6 +126,13 @@ nav a:hover { color: #fff; }
 .carousel-track { transition: transform .35s cubic-bezier(.22,.9,.35,1); }
 .slide { transition: transform .35s cubic-bezier(.22,.9,.35,1), box-shadow .35s ease; }
 
+#topList { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem,1fr)); gap: 1rem; margin-top: 1rem; }
+#topList .card { padding: 0; }
+#topList .card-body { padding: 0.85rem; }
+#topList { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; margin-top: 1rem; }
+#topList .card { overflow: hidden; }
+#topList .card-image { min-height: 10rem; }
+#topList .card-image img { width: 100%; height: 100%; object-fit: cover; }
 
 
 

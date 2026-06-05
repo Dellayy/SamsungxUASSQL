@@ -5390,17 +5390,29 @@ function buildFilterOptions() {
 
 let charts = {};
 
+if (typeof Chart !== 'undefined') {
+  const maybeZoom = window.chartjsPluginZoom || window['chartjs-plugin-zoom'] || window.ChartZoom || window.zoomPlugin || window.chartjsPluginZoom;
+  if (maybeZoom && Chart.register) {
+    try { Chart.register(maybeZoom); } catch (e) { /* already registered */ }
+  }
+}
+
 function createChart(id, label, labels, values, color) {
   const ctx = document.getElementById(id).getContext('2d');
   if (charts[id]) charts[id].destroy();
   charts[id] = new Chart(ctx, {
     type: 'bar',
     data: { labels, datasets: [{ label, data: values, backgroundColor: color, borderRadius: 8 }] },
-    options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}` } } }, scales: { x: { ticks: { maxRotation: 0, minRotation: 0 } }, y: { beginAtZero: true } } }
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}` } }
+      },
+      scales: { x: { ticks: { maxRotation: 0, minRotation: 0 } }, y: { beginAtZero: true } }
+    }
   });
 }
-
-
 
 // create histogram for numeric values (prices)
 function createHistogram(id, values, binCount = 6, color = '#7b9cff') {
@@ -5460,16 +5472,164 @@ function updateCharts(data) {
   });
   createChart('displayChart', 'Phones by Display', Object.keys(displayCount), Object.values(displayCount), '#5f5fff');
   createChart('priceChart', 'Price Ranges', Object.keys(priceRanges), Object.values(priceRanges), '#ff7b7b');
-
-  // histogram of prices
   createHistogram('priceHistChart', data.map(d => d.price), 6, '#7b9cff');
-
-  // scatter price vs rating
   const points = data.filter(d => typeof d.price === 'number' && typeof d.ratings === 'number').map(d => ({ x: d.price, y: d.ratings }));
   createScatter('scatterChart', points, '#ffd36b');
-
-  // average price by RAM
   createAvgPriceByRam('avgRamChart', data, '#7df0c6');
+  createAvgPriceByAndroid('avgAndroidChart', data, '#8be78b');
+  const batteryPoints = data.filter(d => typeof d.battery === 'number' && typeof d.price === 'number').map(d => ({ x: d.battery, y: d.price }));
+  createBatteryRegression('batteryCorrChart', batteryPoints, '#ffd36b', '#ff6b6b');
+  createTopNList('topList', data, 6);
+}
+
+/* -------- Additional analytics & interactive charts -------- */
+
+// create histogram for numeric values (prices)
+function createHistogram(id, values, binCount = 6, color = '#7b9cff') {
+  const nums = values.filter(v => typeof v === 'number' && !isNaN(v));
+  if (nums.length === 0) return;
+  const min = Math.min(...nums);
+  const max = Math.max(...nums);
+  const range = max - min || 1;
+  const binSize = range / binCount;
+  const bins = new Array(binCount).fill(0);
+  nums.forEach(v => {
+    let idx = Math.floor((v - min) / binSize);
+    if (idx >= binCount) idx = binCount - 1;
+    bins[idx]++;
+  });
+  const labels = bins.map((_, i) => {
+    const a = Math.round(min + i * binSize);
+    const b = Math.round(min + (i + 1) * binSize);
+    return `${a.toLocaleString()} - ${b.toLocaleString()}`;
+  });
+  if (charts[id]) charts[id].destroy();
+  const ctx = document.getElementById(id).getContext('2d');
+  charts[id] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ label: 'Frequency', data: bins, backgroundColor: color, borderRadius: 6 }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+  });
+}
+
+// scatter chart with optional regression line (battery vs price)
+function createBatteryRegression(id, dataPoints, colorPoints = '#ffd36b', colorLine = '#ff6b6b') {
+  if (!dataPoints || dataPoints.length === 0) return;
+  const xs = dataPoints.map(p => p.x);
+  const ys = dataPoints.map(p => p.y);
+  const n = xs.length;
+  const meanX = xs.reduce((s,v)=>s+v,0)/n;
+  const meanY = ys.reduce((s,v)=>s+v,0)/n;
+  let num = 0, den = 0;
+  for (let i=0;i<n;i++){ num += (xs[i]-meanX)*(ys[i]-meanY); den += (xs[i]-meanX)*(xs[i]-meanX); }
+  const slope = den === 0 ? 0 : num / den;
+  const intercept = meanY - slope * meanX;
+  // pearson r
+  let numR=0, denRx=0, denRy=0;
+  for (let i=0;i<n;i++){ numR+=(xs[i]-meanX)*(ys[i]-meanY); denRx+=(xs[i]-meanX)**2; denRy+=(ys[i]-meanY)**2; }
+  const r = (denRx*denRy) ? (numR / Math.sqrt(denRx*denRy)) : 0;
+
+  // regression line points
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const linePoints = [{ x: minX, y: intercept + slope * minX }, { x: maxX, y: intercept + slope * maxX }];
+
+  if (charts[id]) charts[id].destroy();
+  const ctx = document.getElementById(id).getContext('2d');
+  charts[id] = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        { label: 'Battery vs Price', data: dataPoints, backgroundColor: colorPoints, pointRadius: 5 },
+        { label: `Regression (r=${r.toFixed(2)})`, data: linePoints, type: 'line', fill: false, borderColor: colorLine, borderWidth: 2, pointRadius: 0, tension: 0.1 }
+      ]
+    },
+    options: {
+      plugins: {
+        legend: { display: true },
+        tooltip: { callbacks: { label: ctx => `Battery: ${ctx.raw.x}mAh, Price: Rp ${ctx.raw.y.toLocaleString()}` } },
+        zoom: {
+          zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'xy' },
+          pan: { enabled: true, mode: 'xy' }
+        }
+      },
+      scales: { x: { title: { display: true, text: 'Battery (mAh)' } }, y: { title: { display: true, text: 'Price (IDR)' } } }
+    }
+  });
+}
+
+// average price by Android version
+function createAvgPriceByAndroid(id, data, color = '#8be78b') {
+  const groups = {};
+  data.forEach(item => {
+    const v = item.android_version || 'unknown';
+    if (!groups[v]) groups[v] = { sum: 0, n: 0 };
+    if (typeof item.price === 'number') { groups[v].sum += item.price; groups[v].n += 1; }
+  });
+  const labels = Object.keys(groups).sort((a,b)=> (a>b?1:-1));
+  const values = labels.map(l => Math.round((groups[l].sum / (groups[l].n||1)) || 0));
+  createChart(id, 'Avg Price by Android', labels, values, color);
+}
+
+// Top N models by combined score (rating + inverse price)
+function createTopNList(containerId, data, N = 6) {
+  if (!Array.isArray(data)) return;
+  const prices = data.map(d => d.price).filter(p => typeof p === 'number');
+  const minP = Math.min(...prices), maxP = Math.max(...prices);
+  const scored = data.map(d => {
+    const rating = (typeof d.ratings === 'number') ? d.ratings : 0;
+    const p = (typeof d.price === 'number') ? d.price : maxP;
+    const ratingScore = rating / 5; // 0..1
+    const priceScore = 1 - ((p - minP) / ((maxP - minP) || 1)); // higher for cheaper
+    const score = ratingScore * 0.6 + priceScore * 0.4;
+    return Object.assign({}, d, { score });
+  });
+  scored.sort((a,b)=> b.score - a.score);
+  const top = scored.slice(0, N);
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = ''; // clear
+  top.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-image"><img src="${item.imgURL || ''}" alt="${item.name || 'product'}"></div>
+      <div class="card-body">
+        <h3>${item.name}</h3>
+        <div class="price">Rp ${item.price ? item.price.toLocaleString() : '-'}</div>
+        <div class="processor">Rating: ${item.ratings || '-'} · Score: ${item.score.toFixed(2)}</div>
+      </div>`;
+    container.appendChild(card);
+  });
+
+  // create a small bar chart of top scores if canvas exists
+  if (document.getElementById('topScoreChart')) {
+    const labels = top.map(t => t.name.split('(')[0].trim().slice(0,24));
+    const values = top.map(t => Math.round(t.score * 100));
+    createChart('topScoreChart', 'Top N Combined Score (×100)', labels, values, '#9b7bff');
+  }
+}
+
+function updateCharts(data) {
+  const displayCount = {};
+  const priceRanges = { '≤10K':0, '10K-15K':0, '15K-20K':0, '>20K':0 };
+  data.forEach(item => {
+    displayCount[item.display] = (displayCount[item.display]||0)+1;
+    if (item.price <= 10000) priceRanges['≤10K']++;
+    else if (item.price <= 15000) priceRanges['10K-15K']++;
+    else if (item.price <= 20000) priceRanges['15K-20K']++;
+    else priceRanges['>20K']++;
+  });
+  createChart('displayChart', 'Phones by Display', Object.keys(displayCount), Object.values(displayCount), '#5f5fff');
+  createChart('priceChart', 'Price Ranges', Object.keys(priceRanges), Object.values(priceRanges), '#ff7b7b');
+  createHistogram('priceHistChart', data.map(d => d.price), 6, '#7b9cff');
+  const points = data.filter(d => typeof d.price === 'number' && typeof d.ratings === 'number').map(d => ({ x: d.price, y: d.ratings }));
+  createScatter('scatterChart', points, '#ffd36b');
+  createAvgPriceByRam('avgRamChart', data, '#7df0c6');
+  createAvgPriceByAndroid('avgAndroidChart', data, '#8be78b');
+  const batteryPoints = data.filter(d => typeof d.battery === 'number' && typeof d.price === 'number').map(d => ({ x: d.battery, y: d.price }));
+  createBatteryRegression('batteryCorrChart', batteryPoints, '#ffd36b', '#ff6b6b');
+  createTopNList('topList', data, 6);
 }
 
 function initDashboard() {
@@ -5517,43 +5677,6 @@ function buildGallery() {
     track.appendChild(li);
   });
   initCarousel();
-}
-
-function initCarousel() {
-  const track = document.querySelector('.carousel-track');
-  const slides = Array.from(track.children);
-  const prevBtn = document.querySelector('.carousel-btn.prev');
-  const nextBtn = document.querySelector('.carousel-btn.next');
-  if (!track || slides.length === 0) return;
-
-  let index = 0;
-  const slideWidth = slides[0].getBoundingClientRect().width + parseFloat(getComputedStyle(track).gap || 8);
-
-  function update() {
-    const offset = -index * (slides[0].getBoundingClientRect().width + 16 /*approx gap*/);
-    track.style.transform = `translateX(${offset}px)`;
-  }
-
-  function next() { index = (index + 1) % slides.length; update(); }
-  function prev() { index = (index - 1 + slides.length) % slides.length; update(); }
-
-  nextBtn && nextBtn.addEventListener('click', () => { next(); resetAuto(); });
-  prevBtn && prevBtn.addEventListener('click', () => { prev(); resetAuto(); });
-
-  let auto = setInterval(next, 3500);
-  function resetAuto() { clearInterval(auto); auto = setInterval(next, 3500); }
-
-  // pause on hover
-  const container = document.querySelector('.carousel');
-  if (container) {
-    container.addEventListener('mouseenter', () => clearInterval(auto));
-    container.addEventListener('mouseleave', () => { clearInterval(auto); auto = setInterval(next, 3500); });
-  }
-
-  // responsive update on resize
-  window.addEventListener('resize', () => { update(); });
-  // initial position
-  update();
 }
 
 // enhance carousel with indicators and thumbnails
