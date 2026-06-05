@@ -5426,6 +5426,9 @@ function initDashboard() {
     showDashboard();
   });
   document.getElementById('scrollDown').addEventListener('click', () => document.getElementById('intro').scrollIntoView({ behavior: 'smooth' }));
+  // build gallery carousel and scroll animations
+  if (typeof buildGallery === 'function') buildGallery();
+  if (typeof initScrollAnimations === 'function') initScrollAnimations();
 }
 
 function showDashboard() {
@@ -5439,3 +5442,72 @@ function showDashboard() {
 }
 
 document.addEventListener('DOMContentLoaded', initDashboard);
+
+/* -------- Gallery & Carousel (uses mobileData array) -------- */
+function buildGallery() {
+  const track = document.querySelector('.carousel-track');
+  if (!track || !Array.isArray(mobileData)) return;
+  // take first 8 items (or fewer)
+  const items = mobileData.slice(0, 8);
+  items.forEach(item => {
+    const li = document.createElement('li');
+    li.className = 'slide';
+    const img = document.createElement('img');
+    img.src = item.imgURL || item.image || '';
+    img.alt = item.name || 'Samsung product';
+    li.appendChild(img);
+    track.appendChild(li);
+  });
+  initCarousel();
+}
+
+function initCarousel() {
+  const track = document.querySelector('.carousel-track');
+  const slides = Array.from(track.children);
+  const prevBtn = document.querySelector('.carousel-btn.prev');
+  const nextBtn = document.querySelector('.carousel-btn.next');
+  if (!track || slides.length === 0) return;
+
+  let index = 0;
+  const slideWidth = slides[0].getBoundingClientRect().width + parseFloat(getComputedStyle(track).gap || 8);
+
+  function update() {
+    const offset = -index * (slides[0].getBoundingClientRect().width + 16 /*approx gap*/);
+    track.style.transform = `translateX(${offset}px)`;
+  }
+
+  function next() { index = (index + 1) % slides.length; update(); }
+  function prev() { index = (index - 1 + slides.length) % slides.length; update(); }
+
+  nextBtn && nextBtn.addEventListener('click', () => { next(); resetAuto(); });
+  prevBtn && prevBtn.addEventListener('click', () => { prev(); resetAuto(); });
+
+  let auto = setInterval(next, 3500);
+  function resetAuto() { clearInterval(auto); auto = setInterval(next, 3500); }
+
+  // pause on hover
+  const container = document.querySelector('.carousel');
+  if (container) {
+    container.addEventListener('mouseenter', () => clearInterval(auto));
+    container.addEventListener('mouseleave', () => { clearInterval(auto); auto = setInterval(next, 3500); });
+  }
+
+  // responsive update on resize
+  window.addEventListener('resize', () => { update(); });
+  // initial position
+  update();
+}
+
+/* -------- Scroll reveal (IntersectionObserver) -------- */
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+}

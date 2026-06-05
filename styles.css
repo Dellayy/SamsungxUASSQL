@@ -67,3 +67,43 @@ nav a:hover { color: #fff; }
   .welcome { padding: 1.5rem; }
   .welcome h1 { font-size: 3.3rem; letter-spacing: 0.35rem; }
 }
+
+/* --- Additional visual enhancements --- */
+.bg-ornament { position: absolute; inset: 0; height: 320px; pointer-events: none; overflow: hidden; z-index: 0; }
+.bg-ornament svg { width: 100%; height: 320px; display: block; opacity: 0.95; }
+.hero-card { position: relative; z-index: 5; }
+.hero-image { width: 100%; height: 360px; object-fit: cover; border-radius: 20px; box-shadow: 0 30px 80px rgba(0,0,0,0.45); transition: transform .7s ease; }
+.hero-image:hover { transform: scale(1.02) translateY(-6px); }
+.intro-grid { gap: 1rem; margin: 2rem 0; }
+.feature-box { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; padding: 1.25rem; transition: transform .28s ease, box-shadow .28s ease; position: relative; overflow: hidden; }
+.feature-box::after { content: ''; position: absolute; inset: -40%; background: radial-gradient(circle at 10% 10%, rgba(95,95,255,0.06), transparent 10%); transform: rotate(12deg); opacity: 0; transition: opacity .4s ease; }
+.feature-box:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(0,0,0,0.38); }
+.feature-box:hover::after { opacity: 1; }
+.feature-box .icon-wrap { width: 56px; height: 56px; display: grid; place-items: center; background: rgba(255,255,255,0.03); border-radius: 14px; margin-bottom: 0.9rem; }
+.feature-box h3 { margin-top: 0; }
+.dashboard.hidden { display: none; }
+.secondary-btn { margin-top: 1rem; background: rgba(255,255,255,0.08); color: #fff; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.hero-card, .intro-card, .feature-box { animation: fadeUp .66s ease both; }
+
+@media (max-width: 980px) { .intro-card { grid-template-columns: 1fr; } .hero-image { height: 240px; } }
+
+/* Carousel styles */
+.carousel { position: relative; display: flex; align-items: center; gap: 1rem; margin: 2rem 0 4rem; }
+.carousel-track-container { overflow: hidden; width: 100%; }
+.carousel-track { display: flex; list-style: none; gap: 1rem; padding: 0; margin: 0; transition: transform .45s cubic-bezier(.22,.9,.35,1); }
+.slide { flex: 0 0 calc(33.333% - 0.66rem); background: rgba(255,255,255,0.03); border-radius: 16px; overflow: hidden; display: grid; place-items: center; }
+.slide img { width: 100%; height: 220px; object-fit: cover; display: block; }
+.carousel-btn { background: rgba(0,0,0,0.5); border: none; color: #fff; font-size: 1.8rem; width: 56px; height: 56px; border-radius: 999px; cursor: pointer; display: grid; place-items: center; transition: transform .18s ease, background .18s ease; }
+.carousel-btn:hover { transform: translateY(-3px); background: linear-gradient(135deg,#5f5fff,#ff7b7b); }
+
+/* responsive carousel: show fewer slides on small screens */
+@media (max-width: 900px) { .slide { flex: 0 0 calc(50% - 0.5rem); } .slide img { height: 180px; } }
+@media (max-width: 520px) { .carousel { gap: 0.5rem } .slide { flex: 0 0 100%; } .carousel-btn { display: none; } }
+
+/* Scroll reveal */
+.reveal-on-scroll { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+.reveal-on-scroll.visible { opacity: 1; transform: none; }
+
+

@@ -10,6 +10,18 @@
   <link rel='stylesheet' href='styles.css'>
 </head>
 <body>
+  <div class="bg-ornament" aria-hidden="true">
+    <!-- decorative gradient blob SVG -->
+    <svg viewBox="0 0 800 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="g1" x1="0" x2="1">
+          <stop offset="0%" stop-color="#5f5fff" stop-opacity="0.18" />
+          <stop offset="100%" stop-color="#ff7b7b" stop-opacity="0.12" />
+        </linearGradient>
+      </defs>
+      <path d="M0 0 C150 120 350 -40 800 80 L800 400 L0 400 Z" fill="url(#g1)"></path>
+    </svg>
+  </div>
   <header>
     <div class='logo'>SAMSUNG DASHBOARD</div>
     <nav>
@@ -31,6 +43,25 @@
     </div>
   </section>
 
+  <section class='gallery reveal-on-scroll' id='gallery'>
+    <div class='section-title'>
+      <div>
+        <h2>Galeri Produk</h2>
+        <p>Telusuri beberapa produk unggulan Samsung. Gunakan tombol atau geser untuk melihat lebih banyak.</p>
+      </div>
+    </div>
+
+    <div class="carousel" aria-roledescription="carousel">
+      <button class="carousel-btn prev" aria-label="Sebelumnya">‹</button>
+      <div class="carousel-track-container">
+        <ul class="carousel-track">
+          <!-- slides will be injected by script.js using mobileData -->
+        </ul>
+      </div>
+      <button class="carousel-btn next" aria-label="Berikutnya">›</button>
+    </div>
+  </section>
+
   <section class='intro' id='intro'>
     <div class='intro-card'>
       <div class='intro-body'>
@@ -39,14 +70,23 @@
         <p>Ini adalah halaman pengantar. Anda dapat menelusuri fitur utama, statistik singkat, dan manfaat Samsung sebelum masuk ke dashboard data penuh.</p>
         <div class='intro-grid'>
           <div class='feature-box'>
+            <div class="icon-wrap" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18M6 6v12" stroke="#b8b8ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
             <h3>Filter Cepat</h3>
             <p>Pilih layar, RAM, penyimpanan, atau versi Android tanpa ribet.</p>
           </div>
           <div class='feature-box'>
+            <div class="icon-wrap" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="#b8b8ff" stroke-width="1.5"/><path d="M8 12h8" stroke="#b8b8ff" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
             <h3>Statistik Ringkas</h3>
             <p>Lihat jumlah model, rata-rata harga, dan baterai terbaik sebelum memutuskan.</p>
           </div>
           <div class='feature-box'>
+            <div class="icon-wrap" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#b8b8ff" stroke-width="1.5"/></svg>
+            </div>
             <h3>Tampilan Elegan</h3>
             <p>Desain modern dengan nuansa Samsung yang sleek dan mudah digunakan.</p>
           </div>
