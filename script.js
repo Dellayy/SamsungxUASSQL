@@ -5632,6 +5632,19 @@ function updateCharts(data) {
   createTopNList('topList', data, 6);
 }
 
+function updateHeroPreview() {
+  if (!Array.isArray(mobileData) || mobileData.length === 0) return;
+  const heroImg = document.getElementById('heroProductImage');
+  const heroLabel = document.getElementById('heroProductLabel');
+  const validItems = mobileData.filter(item => item.imgURL && item.price && typeof item.price === 'number');
+  const topItem = validItems
+    .sort((a, b) => (b.price || 0) - (a.price || 0) || (b.ratings || 0) - (a.ratings || 0))[0] || mobileData.find(item => item.imgURL) || mobileData[0];
+  if (heroImg && topItem.imgURL) {
+    heroImg.src = topItem.imgURL;
+    heroImg.alt = 'Samsung product image';
+  }
+}
+
 function initDashboard() {
   buildFilterOptions();
   document.getElementById('searchInput').addEventListener('input', () => applyFilters());
@@ -5644,6 +5657,7 @@ function initDashboard() {
     showDashboard();
   });
   document.getElementById('scrollDown').addEventListener('click', () => document.getElementById('intro').scrollIntoView({ behavior: 'smooth' }));
+  updateHeroPreview();
   // build gallery carousel and scroll animations
   if (typeof buildGallery === 'function') buildGallery();
   if (typeof initScrollAnimations === 'function') initScrollAnimations();
