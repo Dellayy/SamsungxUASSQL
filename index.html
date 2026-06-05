@@ -13,7 +13,7 @@
   <header>
     <div class='logo'>SAMSUNG DASHBOARD</div>
     <nav>
-      <a href='#dashboard'>Dashboard</a>
+      <a id='dashboardLink' href='#dashboard'>Dashboard</a>
       <a href='#top-picks'>Top Picks</a>
       <a href='#filter-panel'>Filter</a>
     </nav>
@@ -22,16 +22,44 @@
   <section class='welcome' id='welcome'>
     <div class='hero-card'>
       <h1>SAMSUNG</h1>
-      <p>Selamat datang di dashboard Samsung. Temukan semua varian smartphone Samsung dengan filter cerdas, perbandingan harga, dan statistik menarik di satu halaman.</p>
-      <button id='welcomeBtn'>Mulai Eksplorasi</button>
+      <p>Selamat datang di landing page Samsung. Gulir ke bawah untuk melihat fitur, lalu klik untuk masuk ke dashboard utama.</p>
+      <button id='welcomeBtn'>Buka Dashboard</button>
       <div class='graphic'>
-        <img src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80' alt='Samsung showcase' style='width:100%; border-radius:24px; margin-top:1.5rem; max-height: 420px; object-fit:cover;'>
+        <img src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80' alt='Samsung showcase' class='hero-image'>
       </div>
-      <button id='scrollDown' style='margin-top:1rem; background: rgba(255,255,255,0.06); color:#fff;'>Lihat Dashboard</button>
+      <button id='scrollDown' class='secondary-btn'>Lihat Info</button>
     </div>
   </section>
 
-  <main class='dashboard' id='dashboard'>
+  <section class='intro' id='intro'>
+    <div class='intro-card'>
+      <div class='intro-body'>
+        <span class='eyebrow'>Tentang Dashboard</span>
+        <h2>Lebih dulu lihat fitur dan data sebelum masuk ke dashboard</h2>
+        <p>Ini adalah halaman pengantar. Anda dapat menelusuri fitur utama, statistik singkat, dan manfaat Samsung sebelum masuk ke dashboard data penuh.</p>
+        <div class='intro-grid'>
+          <div class='feature-box'>
+            <h3>Filter Cepat</h3>
+            <p>Pilih layar, RAM, penyimpanan, atau versi Android tanpa ribet.</p>
+          </div>
+          <div class='feature-box'>
+            <h3>Statistik Ringkas</h3>
+            <p>Lihat jumlah model, rata-rata harga, dan baterai terbaik sebelum memutuskan.</p>
+          </div>
+          <div class='feature-box'>
+            <h3>Tampilan Elegan</h3>
+            <p>Desain modern dengan nuansa Samsung yang sleek dan mudah digunakan.</p>
+          </div>
+        </div>
+        <button id='openDashboard'>Masuk ke Dashboard</button>
+      </div>
+      <div class='intro-image'>
+        <img src='https://images.unsplash.com/photo-1510557880182-3a935d52e176?auto=format&fit=crop&w=1200&q=80' alt='Samsung features'>
+      </div>
+    </div>
+  </section>
+
+  <main class='dashboard hidden' id='dashboard'>
     <section class='section-title'>
       <div>
         <h2>Ringkasan Data Samsung</h2>

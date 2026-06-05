@@ -5419,10 +5419,23 @@ function initDashboard() {
   document.getElementById('searchInput').addEventListener('input', () => applyFilters());
   ['filterDisplay','filterStorage','filterRam','filterAndroid','filterProcessor','sortSelect']
     .forEach(id => document.getElementById(id).addEventListener('change', applyFilters));
-  document.getElementById('welcomeBtn').addEventListener('click', () => document.getElementById('welcome').classList.add('hidden'));
-  document.getElementById('scrollDown').addEventListener('click', () => document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' }));
-  applyFilters();
-  document.getElementById('resultCount').textContent = state.filtered.length;
+  document.getElementById('welcomeBtn').addEventListener('click', showDashboard);
+  document.getElementById('openDashboard').addEventListener('click', showDashboard);
+  document.getElementById('dashboardLink').addEventListener('click', event => {
+    event.preventDefault();
+    showDashboard();
+  });
+  document.getElementById('scrollDown').addEventListener('click', () => document.getElementById('intro').scrollIntoView({ behavior: 'smooth' }));
+}
+
+function showDashboard() {
+  const dashboard = document.getElementById('dashboard');
+  if (!dashboard.classList.contains('visible')) {
+    dashboard.classList.add('visible');
+    dashboard.classList.remove('hidden');
+    applyFilters();
+  }
+  dashboard.scrollIntoView({ behavior: 'smooth' });
 }
 
 document.addEventListener('DOMContentLoaded', initDashboard);
