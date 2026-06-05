@@ -5634,15 +5634,19 @@ function updateCharts(data) {
 
 function updateHeroPreview() {
   if (!Array.isArray(mobileData) || mobileData.length === 0) return;
-  const heroImg = document.getElementById('heroProductImage');
-  const heroLabel = document.getElementById('heroProductLabel');
-  const validItems = mobileData.filter(item => item.imgURL && item.price && typeof item.price === 'number');
-  const topItem = validItems
-    .sort((a, b) => (b.price || 0) - (a.price || 0) || (b.ratings || 0) - (a.ratings || 0))[0] || mobileData.find(item => item.imgURL) || mobileData[0];
-  if (heroImg && topItem.imgURL) {
-    heroImg.src = topItem.imgURL;
-    heroImg.alt = 'Samsung product image';
-  }
+  const thumbs = [
+    document.getElementById('heroProductThumb1'),
+    document.getElementById('heroProductThumb2'),
+    document.getElementById('heroProductThumb3')
+  ];
+  const validItems = mobileData.filter(item => item.imgURL);
+  const selected = validItems.slice(0, 3);
+  thumbs.forEach((thumb, index) => {
+    if (!thumb) return;
+    const item = selected[index] || selected[selected.length - 1] || { imgURL: '' };
+    thumb.src = item.imgURL || '';
+    thumb.alt = item.name ? item.name.replace(/\(.*\)/, '').trim() : 'Samsung product image';
+  });
 }
 
 function initDashboard() {
