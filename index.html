@@ -33,13 +33,55 @@
 
   <section class='welcome' id='welcome'>
     <div class='hero-card'>
-      <h1>SAMSUNG</h1>
-      <p>Selamat datang di landing page Samsung. Gulir ke bawah untuk melihat fitur, lalu klik untuk masuk ke dashboard utama.</p>
-      <button id='welcomeBtn'>Buka Dashboard</button>
-      <div class='graphic'>
-        <img src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80' alt='Samsung showcase' class='hero-image'>
+      <div class='hero-copy'>
+        <h1>SAMSUNG</h1>
+        <p>Selamat datang di landing page Samsung. Gulir ke bawah untuk melihat fitur, lalu klik untuk masuk ke dashboard utama.</p>
+        <div class='hero-summary'>
+          <div class='hero-pill'>
+            <strong>407</strong>
+            <span>Model terdaftar</span>
+          </div>
+          <div class='hero-pill'>
+            <strong>8</strong>
+            <span>Grafik interaktif</span>
+          </div>
+          <div class='hero-pill'>
+            <strong>100%</strong>
+            <span>Responsive</span>
+          </div>
+        </div>
+        <div class='hero-actions'>
+          <button id='welcomeBtn'>Buka Dashboard</button>
+          <button id='scrollDown' class='secondary-btn'>Lihat Info</button>
+        </div>
       </div>
-      <button id='scrollDown' class='secondary-btn'>Lihat Info</button>
+      <div class='hero-visual'>
+        <div class='hero-image-wrap'>
+          <img src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80' alt='Samsung showcase' class='hero-image'>
+          <div class='hero-tag'>
+            <span>Interactive Data</span>
+            <strong>Smart Samsung Insights</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class='feature-strip reveal-on-scroll'>
+    <div class='feature-card'>
+      <div class='feature-icon'>⚡</div>
+      <h3>Filter Super Cepat</h3>
+      <p>Pilih model berdasarkan RAM, layar, penyimpanan, atau Android version dengan satu klik.</p>
+    </div>
+    <div class='feature-card'>
+      <div class='feature-icon'>📈</div>
+      <h3>Grafik Analitis</h3>
+      <p>Visualisasikan tren harga, baterai, dan rating dalam tampilan yang mudah dibaca.</p>
+    </div>
+    <div class='feature-card'>
+      <div class='feature-icon'>✨</div>
+      <h3>UI Modern</h3>
+      <p>Desain gelap minimalis yang dirancang untuk fokus pada data dan pengalaman pengguna.</p>
     </div>
   </section>
 
@@ -148,6 +190,17 @@
       <div class='chart-card'><canvas id='scatterChart' height='240'></canvas></div>
       <div class='chart-card'><canvas id='avgRamChart' height='240'></canvas></div>
     </div>
+    <div class="chart-grid">
+  <div class="chart-card"><canvas id="avgAndroidChart" height="240"></canvas></div>
+  <div class="chart-card"><canvas id="batteryCorrChart" height="240"></canvas></div>
+  <div class="chart-card"><canvas id="topScoreChart" height="240"></canvas></div>
+</div>
+
+<section id="top-n" class="section-title">
+  <h2>Top Models (Top N)</h2>
+  <p>Daftar model terbaik berdasarkan kombinasi rating & harga (skor gabungan).</p>
+</section>
+<div id="topList" class="card-grid" aria-live="polite"></div>
 
     <section class='section-title' id='top-picks'>
       <h2>Top Picks Samsung</h2>
@@ -158,6 +211,7 @@
   </main>
 
   <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
   <script src='script.js'></script>
 </body>
 </html>
