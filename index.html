@@ -64,10 +64,10 @@
 
           <div class='hero-card-mini'>
             <span class='mini-label'>Trending</span>
-            <div class='product-gallery'>
-              <img class='hero-product-thumb' id='heroProductThumb1' src='' alt='Samsung product 1'>
-              <img class='hero-product-thumb' id='heroProductThumb2' src='' alt='Samsung product 2'>
-              <img class='hero-product-thumb' id='heroProductThumb3' src='' alt='Samsung product 3'>
+            <div class='product-collage'>
+              <img id='heroProductThumb1' class='collage-back' src='' alt='Samsung product image'>
+              <img id='heroProductThumb2' class='collage-mid' src='' alt='Samsung product image'>
+              <img id='heroProductThumb3' class='collage-front' src='' alt='Samsung product image'>
             </div>
           </div>
 
@@ -190,12 +190,42 @@
       <div class='stat-card'><strong id='statTotal'>0</strong><span>Total Model</span></div>
       <div class='stat-card'><strong id='statPrice'>-</strong><span>Rata-rata Harga</span></div>
       <div class='stat-card'><strong id='statRating'>-</strong><span>Rata-rata Rating</span></div>
-      <div class='stat-card'><strong id='statBattery'>-</strong><span>Baterai Teks Maks</span></div>
+      <div class='stat-card'><strong id='statBattery'>-</strong><span>Baterai Terbesar</span></div>
     </div>
 
-    <section class='section-title' id='filter-panel'>
+    <section class='section-title dashboard-insight-title'>
+      <div>
+        <h2>Dashboard Insights</h2>
+        <p>Analisis data yang membantu memahami tren Samsung secara cepat: dari jenis layar paling populer hingga performa baterai dan nilai harga.</p>
+      </div>
+    </section>
+
+    <div class='insight-grid'>
+      <div class='insight-card insight-card--display'>
+        <div class='insight-icon'>📱</div>
+        <h3>Tren Jenis Layar</h3>
+        <p>Melihat mana jenis layar yang paling sering muncul dalam katalog Samsung.</p>
+      </div>
+      <div class='insight-card insight-card--price'>
+        <div class='insight-icon'>💰</div>
+        <h3>Segmentasi Harga</h3>
+        <p>Distribusi harga untuk mengetahui kategori budget, midrange, dan flagship.</p>
+      </div>
+      <div class='insight-card insight-card--rating'>
+        <div class='insight-icon'>⭐</div>
+        <h3>Rating vs Harga</h3>
+        <p>Membandingkan kualitas review dengan level harga untuk menilai nilai terbaik.</p>
+      </div>
+      <div class='insight-card insight-card--battery'>
+        <div class='insight-icon'>🔋</div>
+        <h3>Efisiensi Baterai</h3>
+        <p>Analisis model dengan baterai besar untuk pengguna yang butuh daya tahan lebih lama.</p>
+      </div>
+    </div>
+
+    <section class='section-title filter-section' id='filter-panel'>
       <h2>Filter Pintar</h2>
-      <p>Gunakan pencarian dan filter untuk menemukan Samsung yang paling sesuai.</p>
+      <p>Gunakan panel filter terpisah ini untuk memfokuskan hasil berdasarkan kebutuhan Anda.</p>
     </section>
 
     <div class='filters'>
@@ -214,21 +244,51 @@
         </select></div>
     </div>
 
-    <div class='chart-grid'>
-      <div class='chart-card'><canvas id='displayChart' height='240'></canvas></div>
-      <div class='chart-card'><canvas id='priceChart' height='240'></canvas></div>
-    </div>
+    <section class='section-title chart-section'>
+      <h2>Visualisasi Analisis</h2>
+      <p>Grafik ini menjelaskan pola harga, display, rating, dan korelasi baterai pada data Samsung.</p>
+    </section>
 
     <div class='chart-grid'>
-      <div class='chart-card'><canvas id='priceHistChart' height='240'></canvas></div>
-      <div class='chart-card'><canvas id='scatterChart' height='240'></canvas></div>
-      <div class='chart-card'><canvas id='avgRamChart' height='240'></canvas></div>
+      <div class='chart-card'>
+        <canvas id='displayChart' height='240'></canvas>
+        <p class='chart-caption'>Analisis distribusi jenis layar di koleksi Samsung.</p>
+      </div>
+      <div class='chart-card'>
+        <canvas id='priceChart' height='240'></canvas>
+        <p class='chart-caption'>Distribusi jumlah model dalam setiap rentang harga.</p>
+      </div>
     </div>
-    <div class="chart-grid">
-  <div class="chart-card"><canvas id="avgAndroidChart" height="240"></canvas></div>
-  <div class="chart-card"><canvas id="batteryCorrChart" height="240"></canvas></div>
-  <div class="chart-card"><canvas id="topScoreChart" height="240"></canvas></div>
-</div>
+
+    <div class='chart-grid three-column'>
+      <div class='chart-card'>
+        <canvas id='priceHistChart' height='240'></canvas>
+        <p class='chart-caption'>Histogram harga menampilkan sebaran nilai di seluruh dataset.</p>
+      </div>
+      <div class='chart-card'>
+        <canvas id='scatterChart' height='240'></canvas>
+        <p class='chart-caption'>Scatter plot harga vs rating untuk menilai hubungan kualitas dan biaya.</p>
+      </div>
+      <div class='chart-card'>
+        <canvas id='avgRamChart' height='240'></canvas>
+        <p class='chart-caption'>Rata-rata harga per kategori RAM menunjukkan nilai teratas.</p>
+      </div>
+    </div>
+
+    <div class='chart-grid three-column'>
+      <div class='chart-card'>
+        <canvas id='avgAndroidChart' height='240'></canvas>
+        <p class='chart-caption'>Rata-rata harga berdasarkan versi Android yang digunakan.</p>
+      </div>
+      <div class='chart-card'>
+        <canvas id='batteryCorrChart' height='240'></canvas>
+        <p class='chart-caption'>Korelasi antara kapasitas baterai dan harga model.</p>
+      </div>
+      <div class='chart-card'>
+        <canvas id='topScoreChart' height='240'></canvas>
+        <p class='chart-caption'>Peringkat model terbaik berdasarkan skor gabungan.</p>
+      </div>
+    </div>
 
 <section id="top-n" class="section-title">
   <h2>Top Models (Top N)</h2>
