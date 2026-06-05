@@ -51,13 +51,22 @@
           </div>
         </div>
         <div class='hero-actions'>
-          <button id='welcomeBtn'>Buka Dashboard</button>
+          <button id='welcomeBtn' class='cta-button'>Lihat Dashboard</button>
           <button id='scrollDown' class='secondary-btn'>Lihat Info</button>
         </div>
       </div>
       <div class='hero-visual'>
-        <div class='hero-image-wrap'>
-          <img src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80' alt='Samsung showcase' class='hero-image'>
+        <div class='hero-display'>
+          <div class='hero-card-mini'>
+            <span class='mini-label'>Trending</span>
+            <div class='mini-chart'></div>
+            <p>Harga + baterai dalam visual ringkas.</p>
+          </div>
+          <div class='hero-stats-panel'>
+            <div class='hero-chip'>8GB RAM</div>
+            <div class='hero-chip'>128GB Storage</div>
+            <div class='hero-chip'>Android 13</div>
+          </div>
           <div class='hero-tag'>
             <span>Interactive Data</span>
             <strong>Smart Samsung Insights</strong>
@@ -112,56 +121,51 @@
         <span class='eyebrow'>Tentang Dashboard</span>
         <h2>Lebih dulu lihat fitur dan data sebelum masuk ke dashboard</h2>
         <p>Ini adalah halaman pengantar. Anda dapat menelusuri fitur utama, statistik singkat, dan manfaat Samsung sebelum masuk ke dashboard data penuh.</p>
-        <div class='intro-grid'>
+        <div class='intro-grid intro-highlights'>
           <div class='feature-box'>
             <div class="icon-wrap" aria-hidden="true">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18M6 6v12" stroke="#b8b8ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l7 7-7 7-7-7 7-7z" stroke="#b8b8ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
-            <h3>Filter Cepat</h3>
-            <p>Pilih layar, RAM, penyimpanan, atau versi Android tanpa ribet.</p>
-          </div>
-          <div class='feature-box'>
-            <div class="icon-wrap" aria-hidden="true">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="#b8b8ff" stroke-width="1.5"/><path d="M8 12h8" stroke="#b8b8ff" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </div>
-            <h3>Statistik Ringkas</h3>
-            <p>Lihat jumlah model, rata-rata harga, dan baterai terbaik sebelum memutuskan.</p>
+            <h3>Dashboard Instan</h3>
+            <p>Langsung ke insight utama tanpa perlu membaca tabel panjang.</p>
           </div>
           <div class='feature-box'>
             <div class="icon-wrap" aria-hidden="true">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#b8b8ff" stroke-width="1.5"/></svg>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h4l3-5 5 10" stroke="#b8b8ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 19h10" stroke="#b8b8ff" stroke-width="1.5" stroke-linecap="round"/></svg>
             </div>
-            <h3>Tampilan Elegan</h3>
-            <p>Desain modern dengan nuansa Samsung yang sleek dan mudah digunakan.</p>
+            <h3>Tren Visual</h3>
+            <p>Visualisasi harga dan baterai membuat pola lebih gampang dilihat.</p>
+          </div>
+          <div class='feature-box'>
+            <div class="icon-wrap" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5l2 5 5 .7-4 3.5 1 5-4.5-2.4L7 19l1-5-4-3.5 5-.7 2-5z" stroke="#b8b8ff" stroke-width="1.5" stroke-linejoin="round" fill="none"/></svg>
+            </div>
+            <h3>Top Picks</h3>
+            <p>Panduan model terbaik berdasarkan rating dan value.</p>
           </div>
         </div>
-        <div class='feature-stats'>
-          <div class='stat-pill'>
-            <strong>26+</strong>
-            <span>Filter unggulan</span>
+        <div class='highlight-blocks'>
+          <div class='highlight-card'>
+            <strong>Visual Choices</strong>
+            <p>Setiap titik data punya arti — jadi kamu bisa memilih tanpa tebak-tebakan.</p>
           </div>
-          <div class='stat-pill'>
-            <strong>4</strong>
-            <span>Grafik analitis</span>
-          </div>
-          <div class='stat-pill'>
-            <strong>1 klik</strong>
-            <span>Masuk dashboard</span>
+          <div class='highlight-card highlight-alt'>
+            <strong>Smart Filter</strong>
+            <p>Filter pintar membantu temukan model yang cocok dengan kebutuhanmu.</p>
           </div>
         </div>
-        <div class='mini-callout'>
-          <span>Info cepat</span>
-          <p>Hover di setiap kartu untuk melihat fitur inti yang membuat pemilihan Samsung jadi lebih mudah.</p>
-        </div>
-        <button id='openDashboard'>Masuk ke Dashboard</button>
+        <button id='openDashboard' class='cta-button'>Lihat Dashboard</button>
       </div>
       <div class='intro-image'>
-        <div class='image-mockup'>
-          <img src='https://images.unsplash.com/photo-1510557880182-3a935d52e176?auto=format&fit=crop&w=1200&q=80' alt='Samsung features'>
-          <div class='image-badge'>Interactive Preview</div>
-          <div class='mini-card'>
-            <p><strong>87%</strong> clarity</p>
-            <span>Data insight pada dashboard</span>
+        <div class='preview-panel'>
+          <div class='preview-header'>
+            <span>Dashboard Preview</span>
+            <strong>Visual data dalam sekali lihat</strong>
+          </div>
+          <div class='preview-list'>
+            <div class='preview-item'><strong>•</strong> Filter dinamis</div>
+            <div class='preview-item'><strong>•</strong> Grafik interaktif</div>
+            <div class='preview-item'><strong>•</strong> Top model highlight</div>
           </div>
         </div>
       </div>
