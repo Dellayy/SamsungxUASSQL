@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <title>SAMSUNG Dashboard</title>
+  <link rel='preconnect' href='https://fonts.googleapis.com'>
+  <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+  <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap' rel='stylesheet'>
+  <link rel='stylesheet' href='styles.css'>
+</head>
+<body>
+  <header>
+    <div class='logo'>SAMSUNG DASHBOARD</div>
+    <nav>
+      <a href='#dashboard'>Dashboard</a>
+      <a href='#top-picks'>Top Picks</a>
+      <a href='#filter-panel'>Filter</a>
+    </nav>
+  </header>
+
+  <section class='welcome' id='welcome'>
+    <div class='hero-card'>
+      <h1>SAMSUNG</h1>
+      <p>Selamat datang di dashboard Samsung. Temukan semua varian smartphone Samsung dengan filter cerdas, perbandingan harga, dan statistik menarik di satu halaman.</p>
+      <button id='welcomeBtn'>Mulai Eksplorasi</button>
+      <div class='graphic'>
+        <img src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80' alt='Samsung showcase' style='width:100%; border-radius:24px; margin-top:1.5rem; max-height: 420px; object-fit:cover;'>
+      </div>
+      <button id='scrollDown' style='margin-top:1rem; background: rgba(255,255,255,0.06); color:#fff;'>Lihat Dashboard</button>
+    </div>
+  </section>
+
+  <main class='dashboard' id='dashboard'>
+    <section class='section-title'>
+      <div>
+        <h2>Ringkasan Data Samsung</h2>
+        <p>Temukan produk terbaik, kategori populer, dan statistik harga dari <strong>407 model Samsung</strong>.</p>
+      </div>
+      <div class='results'><h3><span id='resultCount'>0</span> produk ditampilkan</h3></div>
+    </section>
+
+    <div class='stats-grid'>
+      <div class='stat-card'><strong id='statTotal'>0</strong><span>Total Model</span></div>
+      <div class='stat-card'><strong id='statPrice'>-</strong><span>Rata-rata Harga</span></div>
+      <div class='stat-card'><strong id='statRating'>-</strong><span>Rata-rata Rating</span></div>
+      <div class='stat-card'><strong id='statBattery'>-</strong><span>Baterai Teks Maks</span></div>
+    </div>
+
+    <section class='section-title' id='filter-panel'>
+      <h2>Filter Pintar</h2>
+      <p>Gunakan pencarian dan filter untuk menemukan Samsung yang paling sesuai.</p>
+    </section>
+
+    <div class='filters'>
+      <div><label for='searchInput'>Cari nama model</label><input id='searchInput' type='search' placeholder='Galaxy F23, A14, dsb.'></div>
+      <div><label for='filterDisplay'>Jenis Layar</label><select id='filterDisplay'></select></div>
+      <div><label for='filterStorage'>Kapasitas Penyimpanan</label><select id='filterStorage'></select></div>
+      <div><label for='filterRam'>RAM</label><select id='filterRam'></select></div>
+      <div><label for='filterAndroid'>Android Version</label><select id='filterAndroid'></select></div>
+      <div><label for='filterProcessor'>Processor</label><select id='filterProcessor'></select></div>
+      <div><label for='sortSelect'>Sortir</label><select id='sortSelect'>
+          <option value='price-asc'>Harga terendah</option>
+          <option value='price-desc'>Harga tertinggi</option>
+          <option value='rating-desc'>Rating terbaik</option>
+          <option value='battery-desc'>Baterai terbesar</option>
+          <option value='camera-desc'>Kamera terbaik</option>
+        </select></div>
+    </div>
+
+    <div class='chart-grid'>
+      <div class='chart-card'><canvas id='displayChart' height='240'></canvas></div>
+      <div class='chart-card'><canvas id='priceChart' height='240'></canvas></div>
+    </div>
+
+    <section class='section-title' id='top-picks'>
+      <h2>Top Picks Samsung</h2>
+      <p>Perangkat unggulan teratas berdasarkan rating, baterai, dan harga terbaik.</p>
+    </section>
+
+    <div id='cardGrid' class='card-grid'></div>
+  </main>
+
+  <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
+  <script src='script.js'></script>
+</body>
+</html>
